@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
+import jp.co.metateam.library.model.Account;
+import jp.co.metateam.library.model.AccountDto;
 import jp.co.metateam.library.model.BookMst;
 import jp.co.metateam.library.model.BookMstDto;
 import jp.co.metateam.library.service.BookMstService;
@@ -50,5 +52,45 @@ public class BookController {
 
         return "book/add";
     }
+
+
+
+
+    @PostMapping("/book/add")
+    public String register(@Valid @ModelAttribute BookMstDto bookMstDto, BindingResult result, RedirectAttributes ra, Model model) {
+          try {
     
+                boolean errIsbnFlg = false;
+
+                if(result.hasErrors()) {
+                    model.addAttribute("bookMstDto", bookMstDto);
+                    model.addAttribute("org.springframework.validation.BindingResult.bookMstDto",result);
+                    return "book/add";
+                }
+
+                BookMst isbnExist = this.bookMstService.selectByIsbn(bookMstDto.getIsbn());
+    
+                if(isbnExist != null){
+                    result.rejectValue("isbn", "error.value", "ISBNは登録済みです");
+                    errIsbnFlg = true;
+                    return "book/add";
+                }
+                
+            
+                bookMstService.save(bookMstDto);
+    
+                return "redirect:add";
+
+            } catch (Exception e) {
+                log.error("登録失敗: " + e.getMessage());
+                log.error("書籍情報の保存に失敗しました",e);
+                model.addAttribute("errorMessage","書籍情報の保存中にエラーが発生しました。もう一度お試しください。");
+        
+
+        
+                this.bookMstService.save(bookMstDto);
+                return "redirect:/book/index";
+            }      
+    } 
 }
+    
