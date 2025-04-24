@@ -5,14 +5,20 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import io.micrometer.common.util.StringUtils;
+import jp.co.metateam.library.model.Account;
 import jp.co.metateam.library.model.BookMst;
 import jp.co.metateam.library.model.BookMstDto;
+import jp.co.metateam.library.repository.AccountRepository;
 import jp.co.metateam.library.repository.BookMstRepository;
 
 @Service
@@ -24,6 +30,15 @@ public class BookMstService {
     public BookMstService(BookMstRepository bookMstRepository){
         this.bookMstRepository = bookMstRepository;
     }
+
+
+    public BookMst selectByIsbn(String isbn) {
+        return bookMstRepository.selectByIsbn(isbn); 
+    }
+
+
+
+
     
     public List<BookMstDto> findAvailableWithStockCount() {
         List<BookMst> books = this.bookMstRepository.findLimitedBook();
@@ -43,6 +58,21 @@ public class BookMstService {
         return bookMstDtoList;
     }
     
+    @Transactional
+    public void save(BookMstDto bookMstDto){
+    
+        //インスタンス化
+        BookMst bookMst = new BookMst();
+        //AのisbnとtitleをゲットとしてBのisbnとtitleをセット
+        bookMst.setIsbn(bookMstDto.getIsbn());
+        bookMst.setTitle(bookMstDto.getTitle());
+        //それをsaveメソッドの引数
+
+        this.bookMstRepository.save(bookMst);
+
+    }
+
+
 }
 
 
