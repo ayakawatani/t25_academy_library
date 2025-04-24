@@ -79,7 +79,7 @@ public class BookController {
             
                 bookMstService.save(bookMstDto);
     
-                return "redirect:add";
+                return "redirect:index";
 
             } catch (Exception e) {
                 log.error("登録失敗: " + e.getMessage());
@@ -87,9 +87,8 @@ public class BookController {
                 model.addAttribute("errorMessage","書籍情報の保存中にエラーが発生しました。もう一度お試しください。");
         
 
-        
-                this.bookMstService.save(bookMstDto);
-                return "redirect:/book/index";
+    
+                return "book/add";
             }      
     } 
 }
