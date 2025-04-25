@@ -79,7 +79,7 @@ public class BookController {
             
                 bookMstService.save(bookMstDto);
     
-                return "redirect:index";
+                return "redirect:index";//urlに対してゲット通信
 
             } catch (Exception e) {
                 log.error("登録失敗: " + e.getMessage());
