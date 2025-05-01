@@ -64,7 +64,8 @@
 }
 
 .book_table {
-  width: 100%;
+  width: 60%;
+  margin: 20px auto;
   border-collapse: collapse;
   margin-top: 20px;
   border: 1px solid #999;
@@ -83,3 +84,18 @@
   font-weight: bold;
 }
 
+.book_add_btn {
+  background-color: #b0f3b0; /* 緑色 */
+  border: none;              /* 枠線なし */
+  padding: 5px 15px;        /* ボタンの内側の余白 */
+  font-size: 16px;           /* 文字の大きさ */
+  border-radius: 5px;        /* 角を丸く */
+  cursor: pointer;          /* カーソルをポインタに */
+}
+
+
+.right-btn {
+  display: flex;
+  justify-content: flex-end; /* 右寄せ */
+  margin: 20px 0;
+}

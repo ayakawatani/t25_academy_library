@@ -38,3 +38,45 @@
   cursor: pointer;
   opacity: 0.6;
 }
+.back_and_notice {
+  display: flex; /*横並びにする*/
+  justify-content: space-between; /* 左右に分ける */
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.required_notice {
+  color: red;
+  margin: 0;
+}
+
+.submit_btn {
+  background-color: #b0f3b0; /* 緑色 */
+  border: none;              /* 枠線なし */
+  padding: 5px 15px;        /* ボタンの内側の余白 */
+  font-size: 16px;           /* 文字の大きさ */
+  border-radius: 5px;        /* 角を丸く */
+  cursor: pointer;          /* カーソルをポインタに */
+}
+
+.center-btn {
+  display: flex;
+  justify-content: center; /* 横方向に中央揃え */
+  margin-top: 20px; /* 上部との余白 */
+}
+
+/* form-item内のlabelとinputをブロック要素にして改行させる */
+.form-item {
+  margin-bottom: 15px; /* 項目間の間隔を広げる */
+}
+
+.form-item label,
+.form-item input {
+  display: block;
+  width: 100%; /* 必要に応じて調整 */
+}
+
+/* フォーム全体を縦並びに */
+#book_register_form {
+  display: block;
+}
