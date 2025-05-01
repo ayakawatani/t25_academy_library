@@ -7,6 +7,7 @@
     <script type="text/javascript" th:src="@{/js/book/add.js}"></script>
 </head>
 
+
 <body>
     <div class="contents">
         <div th:replace="~{common :: main_sidebar}"></div>
@@ -15,28 +16,29 @@
             <div class="inner_contens">
                 <div class="page_title">書籍登録</div>
                 <div class="page_contents">
+                    <div class="back_and_notice">
+                        <p class="required_notice">*は必須です</p>
+                        <a th:href="@{/book/index}" class="link">← 一覧へ戻る</a>
+                    </div>
                     <form id="book_register_form" th:object="${bookMstDto}" th:action="@{/book/add}" method="post">
-                        <div class="mb30 flexarea">
-                            <span>
-                                <a th:href="@{/book/index}" class="link">← 一覧へ戻る</a>
-                                <p style="color:red;">*は必須です</p>
-                               <tr>
-                                 <th scope="col">書籍名<span style="color:red;">*</span> </th>
-                                 <p><td><input type="text" name="title" th:field="*{title}" placeholder="書籍名を入力"/></td></p>
-                                <div class="error_msg" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
-                               </tr> 
-                            
-                               <p>
-                                <tr>
-                                    <th scope="col">ISBN<span style="color:red;">*</span></th>
-                                    <p><td><input name="isbn" th:field="*{isbn}" placeholder="ISBNを入力"/></td></p>
-                                    <div class="error_msg" th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}"></div>
-                               </tr>
-                               </p>
-                                     <p><button type="submit">保存</button></p>
-                               </td>
-                                </p>
-                            </span>
+                        <!-- 書籍名 -->
+                        <div class="form-item">
+                            <label for="title">書籍名<span style="color:red;">*</span></label>
+                            <input type="text" id="title" name="title" th:field="*{title}" placeholder="書籍名を入力" />
+                            <div class="error_msg" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">
+                            </div>
+                        </div>
+
+                        <!-- ISBN -->
+                        <div class="form-item">
+                            <label for="isbn">ISBN<span style="color:red;">*</span></label>
+                            <input type="text" id="isbn" name="isbn" th:field="*{isbn}" placeholder="ISBNを入力" />
+                            <div class="error_msg" th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}"></div>
+                        </div>
+
+                        <!-- 保存ボタンを中央に配置 -->
+                        <div class="center-btn">
+                            <button type="submit" class="submit_btn">保存</button>
                         </div>
                     </form>
                 </div>
@@ -45,3 +47,4 @@
     </div>
     <div th:replace="~{common :: footer}"></div>
 </body>
+</html>
