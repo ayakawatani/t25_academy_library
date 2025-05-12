@@ -7,6 +7,21 @@
     <script type="text/javascript" th:src="@{/js/book/index.js}"></script>
 </head>
 
+
+
+<div th:if="${popupMessage}" class="modal-overlay" id="popupModal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closePopup()">&times;</span>
+      <p th:text="${popupMessage}"></p>
+    </div>
+    <script>
+        function closePopup() {
+          document.getElementById('popupModal').style.display = 'none';
+        }
+      </script>
+  </div>
+
+  
 <body>
     <div class="contents">
         <div th:replace="~{common :: main_sidebar}"></div>
@@ -16,8 +31,13 @@
                 <div class="page_title">書籍一覧</div>
 
                 <div class="right-btn">
-                    <a th:href="@{/book/add}" class="book_add_btn">書籍登録</a>
+                    <a th:href="@{/book/add}" class="book_add_btn">
+                        <img th:src="@{/images/icons/add.png}" alt="アイコン"
+                            style="height: 16px; vertical-align: middle; margin-right: 5px;">
+                        書籍登録</a>
                 </div>
+
+                
 
 
                 <div class="book_table_area">
@@ -29,10 +49,25 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="book : ${bookMstList}">
-                                <td th:text="${book.title}">タイトル</td>
-                                <td th:text="${book.isbn}">ISBN</td>
-                            </tr>
+                            <td>
+                                <tr th:each="book : ${bookMstList}">
+                                    <td>
+                                        <!--削除ボタン-->
+                                        <a th:href="@{/book/delete}" class="book_delete_btn"></a>
+                                        <img th:src="@{/images/icons/trash.png}" alt="アイコン"
+                                            style="height: 16px; vertical-align: middle; margin-right: 5px;">
+                                        </a>
+
+                                        <!--編集ボタン-->
+                                        <a th:href="@{/book/edit(id=${book.id})}" class="book_edit_btn">
+                                            <img th:src="@{/images/icons/edit.png}" alt="アイコン"
+                                                style="height: 16px; vertical-align: middle; margin-right: 5px;">
+                                        </a>
+
+                                        <span th:text="${book.title}">タイトル</span>
+                                    </td>
+                                    <td th:text="${book.isbn}">ISBN</td>
+                                </tr>
                         </tbody>
                     </table>
                 </div>

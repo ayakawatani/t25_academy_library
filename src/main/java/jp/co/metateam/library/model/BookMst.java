@@ -16,8 +16,9 @@ import jakarta.persistence.Table;
  * 書籍マスタ
  */
 @Entity
-@Table(name = "BookMst")
+@Table(name = "BookMst")//@Table→対応するDBテーブル名を指定
 public class BookMst {
+    //BookMst は データベース構造をJavaで表現したクラス（JPAエンティティ→データベースのテーブルをJavaクラスで表現したもの）
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
