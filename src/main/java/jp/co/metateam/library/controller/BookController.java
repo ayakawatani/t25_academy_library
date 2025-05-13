@@ -126,7 +126,7 @@ public class BookController {
         boolean success;
         try {
             success = bookMstService.updateBook(bookMstDto, model);
-        } catch (RuntimeException e) {
+        } catch (BookNotFoundException e) {
             // 書籍が見つからなかった場合（idが削除されている）
             redirectAttributes.addFlashAttribute("popupMessage", "この書籍は既に削除されています");
             return "redirect:/book/index";
