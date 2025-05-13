@@ -24,6 +24,7 @@ import jp.co.metateam.library.model.AccountDto;
 import jp.co.metateam.library.model.BookMst;
 import jp.co.metateam.library.model.BookMstDto;
 import jp.co.metateam.library.service.BookMstService;
+import jp.co.metateam.library.service.BookMstService.BookNotFoundException;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -86,7 +87,7 @@ public class BookController {
         if (!model.containsAttribute("bookMstDto")) {
             // 画面に渡すデータ bookMstDto がまだ model に入っていないか確認
             // バリデーションエラーなどで一度リダイレクトされた後、すでにデータが入っているかもしれないので、それを防ぐためのチェック
-            //エラーメッセージ付きで編集画面に戻ってきた場合、もうすでに model に bookMstDto が入ってるから実行されない！
+            // エラーメッセージ付きで編集画面に戻ってきた場合、もうすでに model に bookMstDto が入ってるから実行されない！
 
             try {
                 BookMst book = bookMstService.findById(id);
@@ -102,28 +103,24 @@ public class BookController {
                 //データベースから取ってきた BookMst の情報を BookMstDto にコピー
 
                 model.addAttribute("bookMstDto", dto);
-                //DTOをmodelに追加します。これでHTML画面で${bookMstDto}として使えるようになる modelは画面に渡すための箱
+                 //DTOをmodelに追加します。これでHTML画面で${bookMstDto}として使えるようになる modelは画面に渡すための箱
                 //ビュー側で bookMstDto という名前で dto のデータにアクセスできるようにする
                 //addAttribute() メソッドは 最初の引数 に名前を渡し、2番目の引数 にデータを渡す必要がある
 
-            } catch (RuntimeException e) {
-                // エラーをキャッチして処理する　フラッシュ属性でメッセージを渡してリダイレクト
+            } catch (BookNotFoundException e) {
                 redirectAttributes.addFlashAttribute("popupMessage", "この書籍は既に削除されています");
                 return "redirect:/book/index";
-                //idが見つからなかった場合：popupMessage という名前でエラーメッセージをリダイレクト先（一覧画面）に渡す
-                //addFlashAttribute():リダイレクトしたあとにメッセージを渡したいとき一回だけ使える
-
             }
         }
 
-        return "book/edit";//編集画面に遷移
+        return "book/edit";// 編集画面に遷移
     }
 
     @PostMapping("/book/edit")
     public String updateBook(
-            @ModelAttribute("bookMstDto") BookMstDto bookMstDto,//画面から送られてきたフォームのデータを、BookMstDto オブジェクトとして受け取る
-            //BindingResult result,//@ModelAttribute でデータをバインドした後、エラーがあったかどうかをチェックするために使う
-            Model model,//ビューに渡すデータを格納するためのオブジェクト
+            @ModelAttribute("bookMstDto") BookMstDto bookMstDto, // 画面から送られてきたフォームのデータを、BookMstDto オブジェクトとして受け取る
+            // BindingResult result,//@ModelAttribute でデータをバインドした後、エラーがあったかどうかをチェックするために使う
+            Model model, // ビューに渡すデータを格納するためのオブジェクト
             RedirectAttributes redirectAttributes) {
 
         boolean success;
@@ -136,7 +133,7 @@ public class BookController {
         }
 
         if (!success) {
-            return "book/edit";//success が false の場合（更新が失敗した場合）、書籍編集画面に戻る
+            return "book/edit";// success が false の場合（更新が失敗した場合）、書籍編集画面に戻る
         }
 
         return "redirect:/book/index";

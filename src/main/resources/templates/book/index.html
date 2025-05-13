@@ -11,17 +11,12 @@
 
 <div th:if="${popupMessage}" class="modal-overlay" id="popupModal">
     <div class="modal-content">
-      <span class="modal-close" onclick="closePopup()">&times;</span>
-      <p th:text="${popupMessage}"></p>
+        <span class="modal-close" onclick="closePopup()">&times;</span>
+        <p th:text="${popupMessage}"></p>
     </div>
-    <script>
-        function closePopup() {
-          document.getElementById('popupModal').style.display = 'none';
-        }
-      </script>
-  </div>
+</div>
 
-  
+
 <body>
     <div class="contents">
         <div th:replace="~{common :: main_sidebar}"></div>
@@ -37,7 +32,7 @@
                         書籍登録</a>
                 </div>
 
-                
+
 
 
                 <div class="book_table_area">

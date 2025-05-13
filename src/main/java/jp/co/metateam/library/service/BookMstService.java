@@ -132,9 +132,16 @@ public class BookMstService {
         return false;
     }
 
+
+    public class BookNotFoundException extends RuntimeException {
+        public BookNotFoundException(String message) {
+            super(message);
+        }
+    }
+
     public BookMst findById(Long id) {
         return bookMstRepository.findById(id)// 「データベースに行って、そのIDの本（BookMst）を探してね」ってこと
-                .orElseThrow(() -> new RuntimeException("書籍が見つかりません: id=" + id));
+                .orElseThrow(() -> new BookNotFoundException("書籍が見つかりません: id=" + id));
         // もし 見つからなかったらエラーを出す って意味！メッセージはプログラム内のエラーログで見れる
     }
 
