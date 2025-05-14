@@ -14,20 +14,16 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BookMstDto {
-    
+    //BookMstDto クラスは、書籍情報を画面（HTMLフォームなど）とやり取りするためのDTO（データ転送オブジェクト） です。
     private Long id; 
-    
-    @NotEmpty(message = "ISBNは必須です")
-    @Size(min = 13, max = 13, message = "ISBNは13桁で入力してください")
-    @Pattern(regexp = "^[0-9]+$", message = "ISBNは半角数字で入力してください")
+
     private String isbn;
 
-    @NotEmpty(message = "書籍名は必須です")
-    @Size(max = 255, message="書籍名は255文字以内で入力してください")
     private String title;
     
     private Timestamp deletedAt;
 
     private BookMst bookMst;
+
 }
 

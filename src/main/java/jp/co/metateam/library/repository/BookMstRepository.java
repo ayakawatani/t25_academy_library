@@ -15,6 +15,6 @@ public interface BookMstRepository extends JpaRepository<BookMst, Long> {
 	@Query(value = "SELECT * FROM book_mst WHERE id = ?1", nativeQuery = true)
 	Optional<BookMst> selectById(Long id);
 
-	@Query("SELECT b FROM BookMst b WHERE b.isbn = ?1")
-	BookMst selectByIsbn(String isbn);
+	@Query(value = "SELECT * FROM book_mst b WHERE b.isbn = ?1", nativeQuery = true)
+	List<BookMst> selectByIsbn(String isbn);
 }
