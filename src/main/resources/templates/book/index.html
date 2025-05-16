@@ -8,7 +8,7 @@
 </head>
 
 
-
+<!--エラーポップアップ-->
 <div th:if="${popupMessage}" class="modal-overlay" id="popupModal">
     <div class="modal-content">
         <span class="modal-close" onclick="closePopup()">&times;</span>
@@ -48,11 +48,10 @@
                                 <tr th:each="book : ${bookMstList}">
                                     <td>
                                         <!--削除ボタン-->
-                                        <a th:href="@{/book/delete}" class="book_delete_btn"></a>
-                                        <img th:src="@{/images/icons/trash.png}" alt="アイコン"
-                                            style="height: 16px; vertical-align: middle; margin-right: 5px;">
+                                        <a href="#" class="book_delete_btn" th:data-id="${book.id}">
+                                            <img th:src="@{/images/icons/trash.png}" alt="ゴミ箱アイコン"
+                                                style="height: 16px; vertical-align: middle; margin-right: 5px;" />
                                         </a>
-
                                         <!--編集ボタン-->
                                         <a th:href="@{/book/edit(id=${book.id})}" class="book_edit_btn">
                                             <img th:src="@{/images/icons/edit.png}" alt="アイコン"
@@ -72,3 +71,13 @@
     </div>
     <div th:replace="~{common :: footer}"></div>
 </body>
+
+<!-- 削除確認モーダル -->
+<div id="deleteConfirmModal" class="modal-overlay2" style="display: none;">
+    <div class="modal-content2">
+        <p>本当に削除しますか？</p>
+        <button id="confirmDeleteBtn">YES</button>
+        <span class="modal-close2" onclick="closePopup2()">&times;</span>
+        <button onclick="closeModal()">NO</button>
+    </div>
+</div>

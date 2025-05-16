@@ -27,6 +27,8 @@ import jp.co.metateam.library.service.BookMstService;
 import jp.co.metateam.library.service.BookMstService.BookNotFoundException;
 import lombok.extern.log4j.Log4j2;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
 /**
  * 書籍関連クラス
  */
@@ -42,11 +44,12 @@ public class BookController {
     }
 
     @GetMapping("/book/index")
-    public String index(Model model) {
+    public String index(Model model, @AuthenticationPrincipal Account account) {
         // 書籍を全件取得
         List<BookMstDto> bookMstList = this.bookMstService.findAvailableWithStockCount();// BOOK_MSTの書籍データを取得
 
         model.addAttribute("bookMstList", bookMstList);
+        model.addAttribute("account", account); 
 
         return "book/index";
     }
@@ -97,15 +100,15 @@ public class BookController {
                 BookMstDto dto = new BookMstDto();
                 // 編集用のデータ転送オブジェクト（DTO）を作ります。画面に表示するデータの入れ物
 
-                dto.setId(book.getId());//bookからIDをもらって、そのIDをdtoに入れてる
+                dto.setId(book.getId());// bookからIDをもらって、そのIDをdtoに入れてる
                 dto.setTitle(book.getTitle());
                 dto.setIsbn(book.getIsbn());
-                //データベースから取ってきた BookMst の情報を BookMstDto にコピー
+                // データベースから取ってきた BookMst の情報を BookMstDto にコピー
 
                 model.addAttribute("bookMstDto", dto);
-                 //DTOをmodelに追加します。これでHTML画面で${bookMstDto}として使えるようになる modelは画面に渡すための箱
-                //ビュー側で bookMstDto という名前で dto のデータにアクセスできるようにする
-                //addAttribute() メソッドは 最初の引数 に名前を渡し、2番目の引数 にデータを渡す必要がある
+                // DTOをmodelに追加します。これでHTML画面で${bookMstDto}として使えるようになる modelは画面に渡すための箱
+                // ビュー側で bookMstDto という名前で dto のデータにアクセスできるようにする
+                // addAttribute() メソッドは 最初の引数 に名前を渡し、2番目の引数 にデータを渡す必要がある
 
             } catch (BookNotFoundException e) {
                 redirectAttributes.addFlashAttribute("popupMessage", "この書籍は既に削除されています");
@@ -115,7 +118,7 @@ public class BookController {
 
         return "book/edit";// 編集画面に遷移
     }
-
+    
     @PostMapping("/book/edit")
     public String updateBook(
             @ModelAttribute("bookMstDto") BookMstDto bookMstDto, // 画面から送られてきたフォームのデータを、BookMstDto オブジェクトとして受け取る
@@ -138,4 +141,17 @@ public class BookController {
 
         return "redirect:/book/index";
     }
+    
+    @GetMapping("/book/delete")
+    
+    public String delete(@RequestParam("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            bookMstService.delete(id); // 削除フラグを立てる処理
+            redirectAttributes.addFlashAttribute("popupMessage", "削除しました");
+        } catch (BookNotFoundException e) {
+            redirectAttributes.addFlashAttribute("popupMessage", "この書籍はすでに削除されています");
+        }
+        return "redirect:/book/index";
+    }
+
 }

@@ -16,9 +16,9 @@ import jakarta.persistence.Table;
  * 書籍マスタ
  */
 @Entity
-@Table(name = "BookMst")//@Table→対応するDBテーブル名を指定
+@Table(name = "BookMst") // @Table→対応するDBテーブル名を指定
 public class BookMst {
-    //BookMst は データベース構造をJavaで表現したクラス（JPAエンティティ→データベースのテーブルをJavaクラスで表現したもの）
+    // BookMst は データベース構造をJavaで表現したクラス（JPAエンティティ→データベースのテーブルをJavaクラスで表現したもの）
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -35,6 +35,10 @@ public class BookMst {
     /** 削除日時 */
     @Column(name = "deleted_at")
     private Timestamp deletedAt;
+
+    /** 削除フラグ */
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
 
     /** Getters */
 
@@ -54,6 +58,10 @@ public class BookMst {
         return this.deletedAt;
     }
 
+     public boolean isDeleted() {
+        return deleted;
+    }
+
     /** Setters */
 
     public void setId(Long id) {
@@ -71,4 +79,9 @@ public class BookMst {
     public void setDeletedAt(Timestamp deletedAt) {
         this.deletedAt = deletedAt;
     }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+    
 }

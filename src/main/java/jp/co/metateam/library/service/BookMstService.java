@@ -1,5 +1,6 @@
 package jp.co.metateam.library.service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,8 @@ import jp.co.metateam.library.model.BookMst;
 import jp.co.metateam.library.model.BookMstDto;
 import jp.co.metateam.library.repository.AccountRepository;
 import jp.co.metateam.library.repository.BookMstRepository;
+
+import java.sql.Timestamp;
 
 @Service
 public class BookMstService {
@@ -132,7 +135,6 @@ public class BookMstService {
         return false;
     }
 
-
     public class BookNotFoundException extends RuntimeException {
         public BookNotFoundException(String message) {
             super(message);
@@ -140,9 +142,16 @@ public class BookMstService {
     }
 
     public BookMst findById(Long id) {
-        return bookMstRepository.findById(id)// 「データベースに行って、そのIDの本（BookMst）を探してね」ってこと
+        // ① IDが見つからなかったらエラー
+        BookMst book = bookMstRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException("書籍が見つかりません: id=" + id));
-        // もし 見つからなかったらエラーを出す って意味！メッセージはプログラム内のエラーログで見れる
+
+        // ② IDはあるけど deleted = true（論理削除済み）だったらエラー
+        if (book.isDeleted()) {
+            throw new BookNotFoundException("この書籍は削除されています: id=" + id);
+        }
+
+        return book;
     }
 
     @Transactional
@@ -152,13 +161,13 @@ public class BookMstService {
         // boolean：成功なら true、失敗なら false を返す
 
         BookMst existingBook = findById(bookMstDto.getId());
-        //本のIDを使って、今データベースにある元の本のデータを取り出す
+        // 本のIDを使って、今データベースにある元の本のデータを取り出す
 
         boolean isTitleChanged = !bookMstDto.getTitle().equals(existingBook.getTitle());
-        //「タイトルが変わったかどうか？」を調べてる
+        // 「タイトルが変わったかどうか？」を調べてる
 
         boolean isIsbnChanged = !bookMstDto.getIsbn().equals(existingBook.getIsbn());
-        //「ISBNが変わったかどうか？」を調べてる
+        // 「ISBNが変わったかどうか？」を調べてる
 
         // 変更がない場合
         if (!isTitleChanged && !isIsbnChanged) {
@@ -169,17 +178,17 @@ public class BookMstService {
         boolean hasTitleError = false;// 最初はエラーはないと仮定
         boolean hasIsbnError = false;
 
-        //もしタイトルが変わってたら、エラーがあるか調べる
+        // もしタイトルが変わってたら、エラーがあるか調べる
         if (isTitleChanged) {
             hasTitleError = checkbook(bookMstDto, model);
         }
 
-        //もしISBNが変わってたら、エラーがあるか調べる
+        // もしISBNが変わってたら、エラーがあるか調べる
         if (isIsbnChanged) {
             hasIsbnError = checkIsbnEntry(bookMstDto, model);
         }
 
-        //どっちかでもエラーがあったら、更新せずに終わる
+        // どっちかでもエラーがあったら、更新せずに終わる
         if (hasTitleError || hasIsbnError) {
             return false;
         }
@@ -190,6 +199,21 @@ public class BookMstService {
         bookMstRepository.save(existingBook);
 
         return true;
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        BookMst book = bookMstRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException("書籍が見つかりません"));
+
+        // すでに削除されてたらエラー（もう削除済みです！）
+        if (book.isDeleted()) {
+            throw new BookNotFoundException("この書籍は既に削除されています");
+        }
+
+        book.setDeleted(true); // 削除フラグを true に
+        book.setDeletedAt(Timestamp.from(Instant.now())); // ★ 今の時間をセット！
+        bookMstRepository.save(book); // データベースに保存
     }
 
 }
